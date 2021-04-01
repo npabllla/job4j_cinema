@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Cinema</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const req = $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/cinema/hall",
+                dataType: "json"
+            })
+            req.done(function (data) {
+                let tickets = ""
+                for (let i = 1; i <= 3; i++) {
+                    tickets += "<tr>" + "<th>" + "Ряд, " + i + "</th>"
+                    for (let j = 0; j < data.length; j++) {
+                        if (data[j]["row"] === i && data[j]["status"] !== "Taken") {
+                            tickets += "<td>"
+                                + "<input type='radio' name='ticket' id='ticket' value=" + data[j]["id"] + ">"
+                                + " Место, " + data[j]["column"]
+                                + "</td>"
+                        } else if (data[j]["row"] === i) {
+                            tickets += "<td style='background: #c1c1c1'>"
+                                + "<input disabled type='radio' name='ticket' id='ticket' value=" + data[j]["id"] + ">"
+                                + " Место, " + data[j]["column"]
+                                + "</td>"
+                        }
+                    }
+                    tickets += "</tr>"
+                }
+                $('#hall').html(tickets);
+            })
+        })
+        function getChosenTicket() {
+            let ticket = '0'
+            let tickets = document.getElementsByName('ticket');
+            for (let i = 0; i < tickets.length; i++) {
+                if (tickets[i].type === 'radio' && tickets[i].checked) {
+                    ticket = tickets[i].value;
+                    break;
+                }
+            }
+            return ticket
+        }
+
+        function validate(){
+            let flag = true
+            if (getChosenTicket() === '0') {
+                alert("Необходимо выбрать место")
+                flag = false
+            }
+            return flag
+        }
+
+        function goToPayment(){
+            if (validate()) {
+                window.location.href = 'http://localhost:8080/cinema/payment.html?ticket=' + getChosenTicket();
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-3">
+        <h4>
+            Бронирование месте на сеанс
+        </h4>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 120px;">Ряд / Место</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+            </tr>
+            </thead>
+            <tbody id="hall">
+
+            </tbody>
+        </table>
+    </div>
+    <div class="row float-right">
+        <button type="button" class="btn btn-success" onclick="goToPayment()">Оплатить</button>
+    </div>
+</div>
+</body>
+</html>
