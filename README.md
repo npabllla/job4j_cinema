@@ -8,7 +8,9 @@
 * JDBC
 * PostgreSQL
 * Log4j, Sl4J
-* Travis CI
+* Maven
+* Apache Tomcat
+* Travis CI, CheckStyle
 
 ## Интрефейс приложения
 ### Основаня страница
