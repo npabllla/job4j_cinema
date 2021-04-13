@@ -11,5 +11,6 @@ CREATE TABLE ticket (
     col INT NOT NULL,
     price INT NOT NULL CHECK (price > 0),
     status VARCHAR NOT NULL GENERATED ALWAYS AS (CASE WHEN account_id IS NULL THEN 'Free' ELSE 'Taken' END) STORED,
-    account_id INT REFERENCES account(id)
+    account_id INT REFERENCES account(id),
+    constraint uniqueTicket unique (row, col)
 );
